@@ -18,7 +18,20 @@ var (
 
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "Start the Pomodoro timer",
+	Short: "Start a Pomodoro timer",
+	Long: `Repeats work and break cycles as a timer.
+
+Example:
+  time-box start -w 25 -b 5 -c 4
+    → Runs 25min work + 5min break for 4 cycles
+
+Flags:
+  -w, --work   Work duration in minutes (default 25)
+  -b, --break  Break duration in minutes (default 5)
+  -c, --cycles Number of cycles (default 1)
+
+Notifies you with a banner and sound at the end of each cycle.
+Remaining time is shown in the CLI at all times.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx, cancel := context.WithCancel(cmd.Context())
 		defer cancel()

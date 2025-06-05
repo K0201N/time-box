@@ -8,7 +8,15 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "time-box",
-	Short: "Team Pomodoro timer",
+	Short: "Simple CLI Pomodoro timer",
+	Long: `A minimal command-line Pomodoro timer for personal focus sessions.
+
+- Flexible work/break/cycle durations
+- Shows real-time countdown in the terminal
+- Notifies you with a banner and sound at each phase
+
+Run 'time-box start --help' for usage details.
+`,
 }
 
 func main() {
