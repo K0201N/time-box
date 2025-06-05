@@ -37,8 +37,8 @@ Remaining time is shown in the CLI at all times.`,
 		defer cancel()
 
 		phs := []timer.Phase{
-			{"Work", time.Duration(workMin) * time.Minute},
-			{"Break", time.Duration(breakMin) * time.Minute},
+			{Label: "Work", Duration: time.Duration(workMin) * time.Minute},
+			{Label: "Break", Duration: time.Duration(breakMin) * time.Minute},
 		}
 
 		ch := make(chan timer.Tick, 1)
