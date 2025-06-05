@@ -17,13 +17,13 @@ type Tick struct {
 
 func Run(ctx context.Context, phases []Phase, cycles int, out chan<- Tick) {
 	defer close(out)
-	for n := 0; n < cycles && ctx.Err() == nil; n++ {
-		for _, p := range phases {
-			for remain := p.Duration; remain >= 0; remain -= time.Second {
+	for cycle := 0; cycle < cycles && ctx.Err() == nil; cycle++ {
+		for _, phase := range phases {
+			for remain := phase.Duration; remain >= 0; remain -= time.Second {
 				select {
 				case <-ctx.Done():
 					return
-				case out <- Tick{Phase: p.Label, Left: remain}:
+				case out <- Tick{Phase: phase.Label, Left: remain}:
 				}
 				time.Sleep(time.Second)
 			}
