@@ -61,4 +61,11 @@ func init() {
 	f.IntVarP(&workMin, "work", "w", 25, "work minutes")
 	f.IntVarP(&breakMin, "break", "b", 5, "break minutes")
 	f.IntVarP(&cycles, "cycles", "c", 1, "number of cycles")
+
+	startCmd.PreRunE = func(cmd *cobra.Command, args []string) error {
+		if workMin <= 0 || breakMin <= 0 || cycles <= 0 {
+			return fmt.Errorf("all values must be positive: work=%d, break=%d, cycles=%d", workMin, breakMin, cycles)
+		}
+		return nil
+	}
 }
