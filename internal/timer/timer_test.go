@@ -23,17 +23,17 @@ func TestRun_1Cycle(t *testing.T) {
 	}
 
 	want := []Tick{
-		{"Work", 2 * time.Second},
-		{"Work", 1 * time.Second},
-		{"Work", 0},
-		{"Break", 1 * time.Second},
-		{"Break", 0},
+		{"Work", 2 * time.Second, false},
+		{"Work", 1 * time.Second, false},
+		{"Work", 0, false},
+		{"Break", 1 * time.Second, false},
+		{"Break", 0, true},
 	}
 	if len(got) != len(want) {
 		t.Fatalf("tick count mismatch: got=%d want=%d", len(got), len(want))
 	}
 	for i := range want {
-		if got[i].Phase != want[i].Phase || got[i].Left != want[i].Left {
+		if got[i].Phase != want[i].Phase || got[i].Left != want[i].Left || got[i].IsLast != want[i].IsLast {
 			t.Errorf("tick[%d]: got %+v, want %+v", i, got[i], want[i])
 		}
 	}
