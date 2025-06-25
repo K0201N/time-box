@@ -36,6 +36,10 @@ Remaining time is shown in the CLI at all times.`,
 		ctx, cancel := context.WithCancel(cmd.Context())
 		defer cancel()
 
+		if err := notify.Push("time-box", "Timer started!"); err != nil {
+			return fmt.Errorf("push notification failed: %v", err)
+		}
+
 		phs := []timer.Phase{
 			{Label: "Work", Duration: time.Duration(workMin) * time.Minute},
 			{Label: "Break", Duration: time.Duration(breakMin) * time.Minute},
