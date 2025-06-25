@@ -52,11 +52,18 @@ Remaining time is shown in the CLI at all times.`,
 			fmt.Printf("\r%-5s %02d:%02d", t.Phase,
 				int(t.Left.Minutes()), int(t.Left.Seconds())%60)
 			if t.Left == 0 {
-				if err := notify.Push("time-box", t.Phase+" done!"); err != nil {
-					return fmt.Errorf("push notification failed: %v", err)
+				if t.IsLast {
+					if err := notify.Push("time-box", t.Phase+" done! All cycles completed!"); err != nil {
+						return fmt.Errorf("push notification failed: %v", err)
+					}
+				} else {
+					if err := notify.Push("time-box", t.Phase+" done!"); err != nil {
+						return fmt.Errorf("push notification failed: %v", err)
+					}
 				}
 			}
 		}
+
 		fmt.Println()
 		return nil
 	},

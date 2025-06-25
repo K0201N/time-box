@@ -13,6 +13,7 @@ type Phase struct {
 type Tick struct {
 	Phase string
 	Left  time.Duration
+	IsLast bool
 }
 
 func Run(ctx context.Context, phases []Phase, cycles int, out chan<- Tick) {
@@ -23,12 +24,13 @@ func Run(ctx context.Context, phases []Phase, cycles int, out chan<- Tick) {
 	defer close(out)
 
 	for cycle := 0; cycle < cycles && ctx.Err() == nil; cycle++ {
-		for _, phase := range phases {
+		for phaseIdx, phase := range phases {
 			for remain := phase.Duration; remain >= 0; remain -= time.Second {
+				isLast := (cycle == cycles-1) && (phaseIdx == len(phases)-1) && (remain == 0)
 				select {
 				case <-ctx.Done():
 					return
-				case out <- Tick{Phase: phase.Label, Left: remain}:
+				case out <- Tick{Phase: phase.Label, Left: remain, IsLast: isLast}:
 				}
 				time.Sleep(time.Second)
 			}
