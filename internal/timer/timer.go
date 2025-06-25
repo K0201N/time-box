@@ -6,13 +6,13 @@ import (
 )
 
 type Phase struct {
-	Label   string
+	Label    string
 	Duration time.Duration
 }
 
 type Tick struct {
-	Phase string
-	Left  time.Duration
+	Phase  string
+	Left   time.Duration
 	IsLast bool
 }
 

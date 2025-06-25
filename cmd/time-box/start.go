@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/K0201N/time-box/internal/notify"
 	"github.com/K0201N/time-box/internal/timer"
+	"github.com/spf13/cobra"
 )
 
 var (
