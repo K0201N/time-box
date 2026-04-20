@@ -6,6 +6,7 @@ a small notification at the end of each phase.
 
 ## Requirements
 
+* macOS (uses `osascript` and `afplay`)
 * Go 1.24 or later
 
 ## Building and Running
@@ -33,7 +34,7 @@ your preferred durations and number of cycles.
 
 ```shell
 cmd/time-box/     # Cobra CLI entry point and commands
-internal/notify/  # Cross‑platform notification helpers
+internal/notify/  # macOS notification helpers
 internal/timer/   # Core timer logic and tests
 ```
 
