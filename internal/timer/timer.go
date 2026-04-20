@@ -32,7 +32,11 @@ func Run(ctx context.Context, phases []Phase, cycles int, out chan<- Tick) {
 					return
 				case out <- Tick{Phase: phase.Label, Left: remain, IsLast: isLast}:
 				}
-				time.Sleep(time.Second)
+				select {
+				case <-ctx.Done():
+					return
+				case <-time.After(time.Second):
+				}
 			}
 		}
 	}
