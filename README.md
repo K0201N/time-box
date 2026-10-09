@@ -26,8 +26,9 @@ $ ./time-box start -w 25 -b 5 -c 4
 $ go install ./cmd/time-box
 ```
 
-The example above starts a 25‑minute work session followed by a
-5‑minute break for one cycle. Adjust the `-w`, `-b` and `-c` flags for
+`go run ./cmd/time-box start` uses the defaults: one cycle of 25 minutes
+of work and a 5-minute break. The built-binary example uses `-c 4` to
+run four cycles with the same durations. Adjust `-w`, `-b`, and `-c` for
 your preferred durations and number of cycles.
 
 ## Directory Structure
