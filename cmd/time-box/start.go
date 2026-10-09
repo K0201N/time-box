@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/K0201N/time-box/internal/notify"
@@ -36,37 +37,41 @@ Remaining time is shown in the CLI at all times.`,
 		ctx, cancel := context.WithCancel(cmd.Context())
 		defer cancel()
 
-		if err := notify.Push("time-box", "Timer started!"); err != nil {
-			return fmt.Errorf("push notification failed: %v", err)
-		}
-
 		phs := []timer.Phase{
 			{Label: "Work", Duration: time.Duration(workMin) * time.Minute},
 			{Label: "Break", Duration: time.Duration(breakMin) * time.Minute},
 		}
 
-		ch := make(chan timer.Tick, 1)
-		go timer.Run(ctx, phs, cycles, ch)
+		return runStart(ctx, phs, cycles, cmd.OutOrStdout(), cmd.ErrOrStderr(), notify.Push)
+	},
+}
 
-		for t := range ch {
-			fmt.Printf("\r%-5s %02d:%02d", t.Phase,
-				int(t.Left.Minutes()), int(t.Left.Seconds())%60)
-			if t.Left == 0 {
-				if t.IsLast {
-					if err := notify.Push("time-box", t.Phase+" done! All cycles completed!"); err != nil {
-						return fmt.Errorf("push notification failed: %v", err)
-					}
-				} else {
-					if err := notify.Push("time-box", t.Phase+" done!"); err != nil {
-						return fmt.Errorf("push notification failed: %v", err)
-					}
-				}
-			}
+func runStart(ctx context.Context, phases []timer.Phase, cycles int, stdout, stderr io.Writer, push func(string, string) error) error {
+	if err := push("time-box", "Timer started!"); err != nil {
+		fmt.Fprintf(stderr, "notification failed for %q: %v\n", "Timer started!", err)
+	}
+
+	ch := make(chan timer.Tick, 1)
+	go timer.Run(ctx, phases, cycles, ch)
+
+	for tick := range ch {
+		fmt.Fprintf(stdout, "\r%-5s %02d:%02d", tick.Phase,
+			int(tick.Left.Minutes()), int(tick.Left.Seconds())%60)
+		if tick.Left != 0 {
+			continue
 		}
 
-		fmt.Println()
-		return nil
-	},
+		message := tick.Phase + " done!"
+		if tick.IsLast {
+			message += " All cycles completed!"
+		}
+		if err := push("time-box", message); err != nil {
+			fmt.Fprintf(stderr, "\nnotification failed for %q: %v\n", message, err)
+		}
+	}
+
+	fmt.Fprintln(stdout)
+	return nil
 }
 
 func init() {
